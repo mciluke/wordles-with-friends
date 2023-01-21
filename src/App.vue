@@ -2,6 +2,7 @@
 import { reactive, onMounted, computed } from 'vue';
 import SimpleKeyboard from './components/SimpleKeyboard.vue';
 import WordRow from './components/WordRow.vue';
+import fiveLetterWords from './five-letter-words.json'
 
 const state = reactive({
   solution: "books",
@@ -27,7 +28,9 @@ const handleInput = (key) => {
 
   if (key == "{enter}") {
     if (currentGuess.length == 5) {
-      state.currentGuessIndex++;
+      if (fiveLetterWords.includes(currentGuess)) {
+        console.log('valid guess')
+        state.currentGuessIndex++;
       for (let i = 0; i < currentGuess.length; i++) {
         const currentChar = currentGuess.charAt(i);
         if (currentChar == state.solution.charAt(i)) {
@@ -37,6 +40,9 @@ const handleInput = (key) => {
         } else {
           state.guessedLetters.miss.push(currentChar)
         }
+      }
+      } else {
+        console.log('invalid guess')
       }
     }
   }
