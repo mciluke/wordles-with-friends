@@ -39,18 +39,28 @@ watch(
       guessedLetters.miss.join(" "), "miss"
     );
     keyboard.value.addButtonTheme(
-      guessedLetters.found.join(" "), "bg-green-600 text-white"
+      guessedLetters.hint.join(" "), "hint"
     );
     keyboard.value.addButtonTheme(
-      guessedLetters.hint.join(" "), "bg-yellow-500 text-white"
-    )
+      guessedLetters.found.join(" "), "found"
+    );
   },
   {deep: true}
 )
 
 </script>
+
+<style>
 div.miss {
-  @apply bg-grey-500 !important;
+  @apply bg-gray-500 !important;
   @apply text-white;
 }
-<style></style>
+div.found {
+  @apply bg-green-600 !important;
+  @apply text-white;
+}
+div.hint:not(.found) {
+  @apply bg-yellow-600 !important;
+  @apply text-white;
+}
+</style>
