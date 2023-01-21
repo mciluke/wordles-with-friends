@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from 'vue';
+import { reactive, onMounted, computed } from 'vue';
 import SimpleKeyboard from './components/SimpleKeyboard.vue';
 import WordRow from './components/WordRow.vue';
 
@@ -14,8 +14,12 @@ const state = reactive({
   }
 })
 
+const wonGame = computed(() => state.guesses[state.currentGuessIndex - 1] === state.solution)
+
+const lostGame = computed(() => !wonGame.value && state.currentGuessIndex >= 6)
+
 const handleInput = (key) => {
-  if (state.currentGuessIndex >= 6) {
+  if (state.currentGuessIndex >= 6 || wonGame.value) {
     return;
   }
 
@@ -63,6 +67,8 @@ div(class="flex flex-col h-screen max-w-md mx-auto justify-evenly")
       :solution="state.solution",
       :submitted="i < state.currentGuessIndex",
     )
+  p(v-if="wonGame" class="text-center") Congrats, you won!
+  p(v-else-if="lostGame" class="text-center") You lost.
   SimpleKeyboard(
     @onKeyPress="handleInput",
     :guessedLetters="state.guessedLetters",
