@@ -1,5 +1,6 @@
 <template lang="pug">
-div
+div(class="bg-zinc-800")
+  NuxtLink(to="/create") Create a challenge
   //- Header
   div(class="flex flex-col h-screen max-w-md mx-auto justify-evenly")
     div
@@ -13,9 +14,13 @@ div
     //- p(v-if="invalidText" class="text-center") Invalid word entered.
     p(v-if="wonGame" class="text-center") Congrats, you won!
     p(v-else-if="lostGame" class="text-center") You lost.
-    SimpleKeyboard(
+    //- SimpleKeyboard(
+    //-   @onKeyPress="handleInput",
+    //-   :guessedLetters="state.guessedLetters",
+    //- )
+    Keyboard(
       @onKeyPress="handleInput",
-      :guessedLetters="state.guessedLetters",
+      :guessedLetters="state.guessedLetters"
     )
 </template>
 
@@ -43,14 +48,10 @@ const state = reactive({
 })
 
 useHead({
-  title: 'WWF' + state.solution,
+  title: `Wordle from ${state.author}`,
   meta: [
-    { name: 'description', content: 'My amazing site.' }
+    { name: 'description', content: `Wordle challenge from ${state.author}`}
   ],
-  bodyAttrs: {
-    class: 'test'
-  },
-  script: [ { children: 'console.log(\'Hello world\')' } ]
 })
 
 
@@ -86,7 +87,7 @@ const handleInput = (key) => {
 
   const currentGuess = state.guesses[state.currentGuessIndex];
 
-  if (key == "{enter}") {
+  if (key == "enter") {
     if (currentGuess.length == 5) {
       if (validWords.has(currentGuess)) {
         console.log('valid guess')
@@ -106,7 +107,7 @@ const handleInput = (key) => {
       }
     }
   }
-  else if (key == "{bksp}") {
+  else if (key == "backspace") {
     state.guesses[state.currentGuessIndex] = currentGuess.slice(0, -1)
   } else if (currentGuess.length < 5 && /^[a-z]{1}$/.test(key)) {
       state.guesses[state.currentGuessIndex] += key;
@@ -114,13 +115,13 @@ const handleInput = (key) => {
 }
 
 onMounted(() => {
-  
-
   if (route.fullPath.length > 1) {
-    state.cipher = route.fullPath.split('?')[1]
-  }
-  const plaintextGame = decryptGame(state.cipher);
+    state.cipher = route.fullPath.split('?')[1];
+    const plaintextGame = decryptGame(state.cipher);
   loadGame(plaintextGame)
+  }
+  console.log(state.solution)
+
   window.addEventListener('keyup', (e) => {
     e.preventDefault();
     const key = e.key == "Backspace" ? "{bksp}" : e.key == "Enter" ? "{enter}" : e.key.toLowerCase();

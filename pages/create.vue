@@ -1,11 +1,12 @@
 <template lang="pug">
 div Create a challenge!
+  NuxtLink(to="/") (Back to home)
   p Word:
   input(v-model="state.word")
   p Author:
   input(v-model="state.author")
-  p Link:
-  p {{ generateLink(state.word, state.author) }}
+  div(v-if="state.word && state.author") Link:
+    p {{ generateLink(state.word, state.author) }}
 </template>
 
 <script setup>

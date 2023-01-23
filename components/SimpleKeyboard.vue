@@ -1,5 +1,6 @@
 <template lang="pug">
-div(class="simple-keyboard")
+div(class="flex flex-col items-center w-100 pb-5")
+  div(class="simple-keyboard")
 </template>
 
 <script setup>
@@ -28,8 +29,16 @@ onMounted(() => {
         "{enter} z x c v b n m {bksp}"
       ],
     },
+    theme: "flex gap-1 my-0.5 w-fit",
+    buttonTheme: [
+      {
+        class: "bg-gray-200 hover:bg-gray-300 dark:bg-zinc-400 dark:text-white dark:hover:bg-zinc-500 w-7 sm:w-10",
+        buttons: "q w e r t y"
+      }
+    ],
     onKeyPress: onKeyPress
-  })
+  });
+  keyboard.value.addButtonTheme("bg-gray-200 hover:bg-gray-300 dark:bg-zinc-400 dark:text-white dark:hover:bg-zinc-500");
 });
 
 watch(
