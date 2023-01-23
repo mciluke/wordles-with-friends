@@ -1,10 +1,16 @@
 <template lang="pug">
-div
-  NuxtLink(to="/create") Create a challenge
+div(class="h-screen")
+  Header
   //- Header
-  Toast(v-if="state.invalidGuess", @toastDone="resetToast")
-  div(class="flex flex-col h-screen max-w-md mx-auto justify-evenly")
-    div
+  Toast(
+    v-if="state.toast.text", 
+    :toastText="state.toast.text",
+    :toastColor="state.toast.color",
+    :toastIcon="state.toast.icon"
+    @toastDone="resetToast",
+  )
+  div(class="flex flex-col max-w-md mx-auto flex-start")
+    div(class="p-5")
       WordRow(
         v-for="(guess, i) in state.guesses",
         :key="i", 
@@ -12,13 +18,8 @@ div
         :solution="state.solution",
         :submitted="i < state.currentGuessIndex",
       )
-    //- p(v-if="invalidText" class="text-center") Invalid word entered.
-    p(v-if="wonGame" class="text-center") Congrats, you won!
-    p(v-else-if="lostGame" class="text-center") You lost.
-    //- SimpleKeyboard(
-    //-   @onKeyPress="handleInput",
-    //-   :guessedLetters="state.guessedLetters",
-    //- )
+    //- p(v-if="wonGame" class="text-center") Congrats, you won!
+    //- p(v-else-if="lostGame" class="text-center") You lost.
     Keyboard(
       @onKeyPress="handleInput",
       :guessedLetters="state.guessedLetters"
@@ -46,7 +47,12 @@ const state = reactive({
     found: [],
     hint: []
   },
-  invalidGuess: false,
+  toast: {
+    text: "",
+    color: "",
+    icon: ""
+  },
+  wonGame: false,
 })
 
 useHead({
@@ -57,9 +63,9 @@ useHead({
 })
 
 
-const wonGame = computed(() => state.guesses[state.currentGuessIndex - 1] === state.solution)
+// const wonGame = computed(() => state.guesses[state.currentGuessIndex - 1] === state.solution)
 
-const lostGame = computed(() => !wonGame.value && state.currentGuessIndex >= 6)
+// const lostGame = computed(() => !wonGame.value && state.currentGuessIndex >= 6)
 
 const decryptGame = (encryptedHex) => {
   // When ready to decrypt the hex string, convert it back to bytes
@@ -83,11 +89,11 @@ const loadGame = (plaintextWordAndAuthor) => {
 }
 
 const resetToast = () => {
-  state.invalidGuess = false;
+  state.toast.text = "";
 }
 
 const handleInput = (key) => {
-  if (state.currentGuessIndex >= 6 || wonGame.value) {
+  if (state.currentGuessIndex >= 6 || state.wonGame) {
     return;
   }
 
@@ -96,21 +102,26 @@ const handleInput = (key) => {
   if (key == "enter") {
     if (currentGuess.length == 5) {
       if (validWords.has(currentGuess)) {
-        console.log('valid guess')
         state.currentGuessIndex++;
-      for (let i = 0; i < currentGuess.length; i++) {
-        const currentChar = currentGuess.charAt(i);
-        if (currentChar == state.solution.charAt(i)) {
-          state.guessedLetters.found.push(currentChar);
-        } else if (state.solution.indexOf(currentChar) != -1) {
-          state.guessedLetters.hint.push(currentChar)
-        } else {
-          state.guessedLetters.miss.push(currentChar)
+        for (let i = 0; i < currentGuess.length; i++) {
+          const currentChar = currentGuess.charAt(i);
+          if (currentChar == state.solution.charAt(i)) {
+            state.guessedLetters.found.push(currentChar);
+          } else if (state.solution.indexOf(currentChar) != -1) {
+            state.guessedLetters.hint.push(currentChar)
+          } else {
+            state.guessedLetters.miss.push(currentChar)
+          }
         }
-      }
+        if(currentGuess === state.solution) {
+          state.wonGame = true;
+          state.toast.text = "You win!";
+          state.toast.color = "green";
+        }
       } else {
-        console.log('invalid guess')
-        state.invalidGuess = true;
+        state.toast.text = "Invalid word entered.";
+        state.toast.color = "yellow"
+        state.toast.icon = "warning"
       }
     }
   }
