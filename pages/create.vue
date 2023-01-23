@@ -12,8 +12,8 @@ div Create a challenge!
 <script setup>
 import { reactive, onMounted, computed } from 'vue';
 import aesjs from 'aes-js';
-const runtimeConfig = useRuntimeConfig()
 
+const runtimeConfig = useRuntimeConfig()
 
 const state = reactive({
   word: "",
@@ -30,13 +30,9 @@ const encryptGame = (word, author) => {
   const encryptedBytes = aesCtr.encrypt(textBytes);
 
   return aesjs.utils.hex.fromBytes(encryptedBytes);
-
 }
 
 const generateLink = (word, author) => {
   return encryptGame(word, author)
 }
-
-
-
 </script>

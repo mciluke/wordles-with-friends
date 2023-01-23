@@ -1,7 +1,8 @@
 <template lang="pug">
-div(class="bg-zinc-800")
+div
   NuxtLink(to="/create") Create a challenge
   //- Header
+  Toast(v-if="state.invalidGuess", @toastDone="resetToast")
   div(class="flex flex-col h-screen max-w-md mx-auto justify-evenly")
     div
       WordRow(
@@ -44,7 +45,8 @@ const state = reactive({
     miss: [],
     found: [],
     hint: []
-  }
+  },
+  invalidGuess: false,
 })
 
 useHead({
@@ -80,6 +82,10 @@ const loadGame = (plaintextWordAndAuthor) => {
   console.log(state.solution, state.author)
 }
 
+const resetToast = () => {
+  state.invalidGuess = false;
+}
+
 const handleInput = (key) => {
   if (state.currentGuessIndex >= 6 || wonGame.value) {
     return;
@@ -104,6 +110,7 @@ const handleInput = (key) => {
       }
       } else {
         console.log('invalid guess')
+        state.invalidGuess = true;
       }
     }
   }
