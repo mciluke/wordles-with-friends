@@ -2,7 +2,7 @@
 Transition
   div(
     v-if="state.toastVisible"
-    class="absolute bg-opacity-90 pl-2 pr-2 py-1 text-gray-700 top-20 rounded-sm shadow-lg transform -translate-x-1/2 left-1/2", 
+    class="absolute bg-opacity-90 pl-2 pr-2 py-1 text-gray-700 top-20 rounded-sm shadow-lg transform -translate-x-1/2 left-1/2 sm:flex sm:flex-col sm:items-center", 
     :class="props.toastColor == 'yellow' ? 'bg-yellow-200 border border-yellow-300' : props.toastColor == 'green' ? 'bg-green-500 border border-green-600' : '' " 
   )
     svg(v-if="props.toastIcon" class="h-5 w-5 inline" xmlns='http://www.w3.org/2000/svg' viewbox='0 0 20 20' fill='currentColor')
@@ -11,37 +11,36 @@ Transition
 </template>
 
 <script setup>
-import {reactive, onMounted } from 'vue';
-const emit = defineEmits(["toastDone"]);
+import { reactive, onMounted } from 'vue';
+const emit = defineEmits(['toastDone']);
 
 const props = defineProps({
   toastText: {
     type: String,
-    default: ""
+    default: '',
   },
   toastColor: {
     type: String,
-    default: ""
+    default: '',
   },
   toastIcon: {
     type: String,
-    default: ""
-  }
+    default: '',
+  },
 });
 
 const state = reactive({
-  toastVisible: true
-})
+  toastVisible: true,
+});
 
 onMounted(() => {
   // console.log(state.t)
   setTimeout(() => {
     state.toastVisible = false;
-    setTimeout(() => emit("toastDone"), 525);
+    setTimeout(() => emit('toastDone'), 525);
     return;
-  }, 1000)
-})
-
+  }, 2000);
+});
 </script>
 <style>
 .v-enter-active,

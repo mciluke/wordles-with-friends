@@ -6,7 +6,7 @@ div(class="flex flex-col items-center w-100 pb-5")
     )
     button(
       v-for="key in row"
-      class="h-14 300 grid items-center rounded font-semibold cursor-pointer bg-zinc-400 text-white hover:bg-zinc-500",
+      class="h-14 grid items-center rounded font-semibold cursor-pointer bg-zinc-400 text-white hover:bg-zinc-500 uppercase",
       :class="[key.length === 1 ? 'w-7 sm:w-10' : 'p-2 sm:p-4', props.guessedLetters.found.includes(key) ? '!bg-green-600' : props.guessedLetters.hint.includes(key) ? '!bg-yellow-500' : props.guessedLetters.miss.includes(key) ? '!text-gray' : '']"
       @click="onKeyPress(key)"
     ) {{ key == 'backspace' ? '' : key }}
@@ -16,16 +16,20 @@ div(class="flex flex-col items-center w-100 pb-5")
 </template>
 
 <script setup>
-const emit = defineEmits(["onKeyPress"]);
+const emit = defineEmits(['onKeyPress']);
 const props = defineProps({
-  guessedLetters: Object
-})
+  guessedLetters: Object,
+});
 
-const keyboard = [['q', 'w', 'e', 'r', 't', 'y', 'u','i','o','p'], ['a', 's', 'd', 'f', 'g', 'h', 'j','k','l'], ['enter', 'z', 'x', 'c', 'v', 'b', 'n','m','backspace']];
+const keyboard = [
+  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+  ['enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'backspace'],
+];
 
 const onKeyPress = (button) => {
-  emit("onKeyPress", button);
-}
+  emit('onKeyPress', button);
+};
 </script>
 
 <style>

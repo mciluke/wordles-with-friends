@@ -2,13 +2,13 @@
 const props = defineProps({
   letter: {
     type: String,
-    default: ""
+    default: '',
   },
   color: {
     type: String,
-    default: ""
-  }
-})
+    default: '',
+  },
+});
 </script>
 
 <template lang="pug">
