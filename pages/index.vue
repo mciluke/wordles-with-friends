@@ -1,5 +1,5 @@
 <template lang="pug">
-div(class="min-h-screen bg-zinc-800 overflow-hidden touch-none select-none") 
+div(class="min-h-screen bg-zinc-800") 
   Header
   //- Header
   //- div(class="text-white flex flex-row justify-center bg-zinc-600") ello
@@ -10,14 +10,12 @@ div(class="min-h-screen bg-zinc-800 overflow-hidden touch-none select-none")
     :toastIcon="state?.toast?.icon || ''"
     @toastDone="resetToast",
   )
-  div(class="flex flex-col max-w-md mx-auto flex-start min-h-[calc(100vh-64px)] px-4")
+  div(class="flex flex-col max-w-md mx-auto flex-start min-h-[calc(100vh-64px)] px-4 pb-safe")
     //- Tagline section
     div(class="text-center py-4")
       template(v-if="!state.author")
-        p(class="text-white text-lg mb-2") Welcome to Wordle with Friends!
-        p(class="text-zinc-400 text-sm")
-          | Play today's wordle or 
-          NuxtLink(to="/create" class="text-white hover:text-zinc-200") create and share your own &gt;
+        p(class="text-white text-lg") Play today's word or 
+          NuxtLink(to="/create" class="text-white hover:text-zinc-200 underline") create a challenge
       template(v-else)
         p(class="text-white text-lg") Guess the 5-letter word from 
           span(class="font-bold") {{ state.author }}
@@ -36,7 +34,7 @@ div(class="min-h-screen bg-zinc-800 overflow-hidden touch-none select-none")
       Keyboard(
         @onKeyPress="handleInput",
         :guessedLetters="state.guessedLetters"
-        class="pb-safe mt-4"
+        class="mt-4"
       )
 </template>
 
@@ -64,10 +62,7 @@ useHead({
       name: 'format-detection',
       content: 'telephone=no'
     }
-  ],
-  htmlAttrs: {
-    class: 'touch-none'
-  }
+  ]
 });
 
 // Initialize state first
@@ -97,24 +92,6 @@ const resetToast = () => {
   state.toast.color = '';
   state.toast.icon = '';
 };
-
-// Prevent zoom on double tap and pinch
-let lastTap = 0;
-onMounted(() => {
-  document.addEventListener('touchstart', (e) => {
-    if (e.touches.length > 1) {
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      e.preventDefault();
-    }
-    lastTap = now;
-  }, { passive: false });
-});
 
 const decryptGame = (encryptedHex) => {
   try {
@@ -213,12 +190,16 @@ onMounted(async () => {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Additional zoom prevention */
+/* Basic touch handling */
 * {
-  touch-action: manipulation;
-  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection except in inputs */
+body {
   -webkit-user-select: none;
   user-select: none;
+  overscroll-behavior-x: none;
 }
 
 input, textarea {
