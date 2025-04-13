@@ -1,12 +1,3 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "framework": "nuxtjs",
-  "builds": [
-    {
-      "src": "nuxt.config.ts",
-      "use": "@vercel/node"
-    }
-  ]
+  "framework": "nuxtjs"
 } 
