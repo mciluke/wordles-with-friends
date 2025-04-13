@@ -2,7 +2,7 @@
   "framework": "nuxtjs",
   "functions": {
     "api/**/*": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node@18"
     }
   }
 } 
