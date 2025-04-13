@@ -10,6 +10,12 @@ div(class="min-h-screen bg-zinc-800")
     :toastIcon="state?.toast?.icon || ''"
     @toastDone="resetToast",
   )
+  VictoryBanner(
+    v-if="state.wonGame"
+    :solution="state.solution"
+    :author="state.author"
+    :attempts="state.currentGuessIndex"
+  )
   div(class="flex flex-col max-w-md mx-auto flex-start min-h-[calc(100vh-64px)] px-4 pb-safe")
     //- Tagline section
     div(class="text-center py-4")
@@ -123,6 +129,38 @@ const loadGame = (plaintextWordAndAuthor) => {
   // console.log(state.solution, state.author);
 };
 
+// Add confetti function
+const triggerConfetti = () => {
+  const duration = 3000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+  const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+
+    // Use confetti from window object since we're not using a module
+    window.confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+    });
+    window.confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+    });
+  }, 250);
+};
+
+// Update the handleInput function to trigger celebration
 const handleInput = (key) => {
   if (state.currentGuessIndex >= 6 || state.wonGame) {
     return;
@@ -146,8 +184,18 @@ const handleInput = (key) => {
         }
         if (currentGuess === state.solution) {
           state.wonGame = true;
-          state.toast.text = 'You win!';
-          state.toast.color = 'green';
+          // Add script tag for confetti
+          if (!document.getElementById('confetti-script')) {
+            const script = document.createElement('script');
+            script.id = 'confetti-script';
+            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+            script.onload = () => {
+              triggerConfetti();
+            };
+            document.head.appendChild(script);
+          } else {
+            triggerConfetti();
+          }
         }
       } else {
         state.toast.text = 'Invalid word entered.';
