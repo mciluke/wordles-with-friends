@@ -15,6 +15,7 @@ div(class="min-h-screen bg-zinc-800")
     :solution="state.solution"
     :author="state.author"
     :attempts="state.currentGuessIndex"
+    @close="state.showVictoryBanner = false"
   )
   div(class="flex flex-col max-w-md mx-auto flex-start min-h-[calc(100vh-64px)] px-4 pb-safe")
     //- Tagline section
@@ -27,7 +28,7 @@ div(class="min-h-screen bg-zinc-800")
           span(class="font-bold") {{ state.author }}
         p(class="text-zinc-400 text-sm mt-1") 
           | You have 6 attempts to find the word. 
-          NuxtLink(to="/create" class="text-white hover:text-zinc-200") Create your own &gt;
+        NuxtLink(to="/create" class="text-white hover:text-zinc-200") Create your own &gt;
     div(class="flex-grow flex flex-col justify-between")
       div(class="space-y-1")
         WordRow(    
@@ -89,6 +90,7 @@ const state = reactive({
     icon: '',
   },
   wonGame: false,
+  showVictoryBanner: false,
 });
 
 // Then define functions that use state
@@ -184,6 +186,7 @@ const handleInput = (key) => {
         }
         if (currentGuess === state.solution) {
           state.wonGame = true;
+          state.showVictoryBanner = true;
           // Add script tag for confetti
           if (!document.getElementById('confetti-script')) {
             const script = document.createElement('script');
