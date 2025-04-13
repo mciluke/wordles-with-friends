@@ -1,8 +1,3 @@
 {
-  "framework": "nuxtjs",
-  "functions": {
-    "api/**/*": {
-      "runtime": "@vercel/node@18"
-    }
-  }
+  "framework": "nuxtjs"
 } 
