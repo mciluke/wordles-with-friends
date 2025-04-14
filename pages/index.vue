@@ -46,31 +46,13 @@ div(class="min-h-screen bg-zinc-800")
 </template>
 
 <script setup>
-import { reactive, onMounted, computed } from 'vue';
+import { reactive, onMounted, computed, watch } from 'vue';
 import fiveLetterWords from '../assets/five-letter-words.json';
 import aesjs from 'aes-js';
 
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 const validWords = new Set(fiveLetterWords);
-
-// Add meta for mobile viewport and disable zooming
-useHead({
-  meta: [
-    { 
-      name: 'viewport', 
-      content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' 
-    },
-    {
-      name: 'HandheldFriendly',
-      content: 'true'
-    },
-    {
-      name: 'format-detection',
-      content: 'telephone=no'
-    }
-  ]
-});
 
 // Initialize state first
 const state = reactive({
@@ -91,6 +73,35 @@ const state = reactive({
   },
   wonGame: false,
   showVictoryBanner: false,
+});
+
+// Add meta for mobile viewport and disable zooming
+useHead({
+  meta: [
+    { 
+      name: 'viewport', 
+      content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' 
+    },
+    {
+      name: 'HandheldFriendly',
+      content: 'true'
+    },
+    {
+      name: 'format-detection',
+      content: 'telephone=no'
+    },
+    // Open Graph meta tags for link previews
+    {
+      property: 'og:title',
+      content: route.fullPath.length > 1 ? 'You\'ve been sent a Wordle Challenge' : 'Daily Wordle Challenge'
+    },
+    {
+      property: 'og:description',
+      content: route.fullPath.length > 1 
+        ? 'Can you guess this 5-letter word in 6 attempts?'
+        : 'Play today\'s word or create your own challenge. Can you guess the 5-letter word in 6 attempts?'
+    }
+  ]
 });
 
 // Then define functions that use state
